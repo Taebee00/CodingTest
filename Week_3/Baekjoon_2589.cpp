@@ -6,7 +6,7 @@ char mp[54][54];
 int dx[4]={0,1,0,-1}, dy[4]={-1,0,1,0};
 vector<pair<int,int>> v;
 queue<pair<int,int>> q;
-int ret=0;
+int ret=1;
 
 void init(){
     for (int i=0;i<h;i++){
