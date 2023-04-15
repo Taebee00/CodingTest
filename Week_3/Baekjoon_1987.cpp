@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int h,w,mx=0,visitied[20][20]={0,}, dx[4]={0,1,0,-1}, dy[4]={-1,0,1,0};
+int h,w,mx=1,visitied[20][20]={0,}, dx[4]={0,1,0,-1}, dy[4]={-1,0,1,0};
 char mp[20][20];
 pair<int,int> parent[20][20];
 vector<char> v;
