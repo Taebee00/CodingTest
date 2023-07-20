@@ -2,53 +2,52 @@
 
 using namespace std;
 
-int main()
-{
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
+int N,K,mx=0;
+string str[50];
+int bin=(1<<'a'-'a')|(1<<'n'-'a')|(1<<'t'-'a')|(1<<'i'-'a')|(1<<'c'-'a');
 
-    char except[5]={'a','n','t','i','c'};
-
-    int N, K, mpcnt=0, res=0;
-    string words[50];
-    map<char,int> mp;
-    cin >> N >> K;
-    for (int i=0;i<N;i++){
-        cin >> words[i];
-        for (int j=4;j<words[i].length()-4;j++){
-            if (!mp[words[i][j]]&&find(begin(except),end(except),words[i][j])==end(except)){
-                mp[words[i][j]]=mpcnt++;
-            }
-        }  
-    }
-    for (int i=0;i<(1<<mpcnt);i++){
+void find(int num,int left,int choice)
+{   
+    if (left==0){
+        cout <<"\n";
         int cnt=0;
-        for (int j=0;j<mpcnt;j++){
-            if (i&(1<<j)){
+        for (int i=0;i<N;i++){
+            int flag=0;
+            for (int j=0;j<str[i].length();j++){
+                if (!(bin&(1<<(str[i][j]-'a')))){
+                    flag=1;
+                    break;
+                }
+            }
+            if (!flag){
                 cnt++;
             }
-            if (cnt>K-5){
-                break;
-            }
         }
-        int readcnt=0;
-        if (cnt==K-5){
-            for(int j=0;j<N;j++){
-                int flag=0;
-                for (int k=0;k<words[j].length();k++){
-                    if (!(i&(1<<mp[words[j][k]]))&&find(begin(except),end(except),words[j][k])==end(except)){
-                        flag=1;
-                        break;
-                    }
-                }
-                if (!flag){
-                    readcnt++;
-                }
-            }
+        if (cnt>mx){
+            mx=cnt;
         }
-        if (readcnt>res){
-            res=readcnt;
-        }       
     }
-    cout<<res;
+    for (int i=choice+1;i<num;i++){
+        if (i+'a'=='a'||i+'a'=='n'||i+'a'=='t'||i+'a'=='c'||i+'a'=='i'){
+            continue;
+        }
+        bin|=1<<i;
+        find(num,left-1,i);
+    }
+    bin&=~(1<<choice);
+    return;
+}
+
+int main()
+{  
+    cin >> N >> K;
+    for(int i=0;i<N;i++){
+        cin >> str[i];
+    }
+    if (K<5){
+        cout << '0';
+        return 0;
+    }
+    find(26,K-5,-1);
+    cout << mx;
 }
