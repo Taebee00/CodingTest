@@ -9,7 +9,6 @@ int bin=(1<<'a'-'a')|(1<<'n'-'a')|(1<<'t'-'a')|(1<<'i'-'a')|(1<<'c'-'a');
 void find(int num,int left,int choice)
 {   
     if (left==0){
-        cout <<"\n";
         int cnt=0;
         for (int i=0;i<N;i++){
             int flag=0;
