@@ -5,7 +5,6 @@ using namespace std;
 int sosu[4000001]={0,};
 int sosuarr[4000000];
 int sumarr[4000000];
-deque<int> dq;
 
 int main()
 {
