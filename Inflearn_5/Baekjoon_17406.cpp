@@ -5,7 +5,6 @@ using namespace std;
 int N, M, K, mp[51][51], temp_mp[51][51], ret=INT_MAX;
 vector<vector<int>> v;
 vector<int> choose_v;
-int visitied[10]={0,};
 int dy[4]={1,0,-1,0}, dx[4]={0,1,0,-1};
 
 void rotate(int y,int x,int sz){
@@ -32,46 +31,33 @@ void rotate(int y,int x,int sz){
 }
 
 void choose(int sz,vector<int> &_choose_v){
-    // printf("sz: %d\n",sz);
-    // for (int&i:_choose_v){
-    //     printf("%d ",i);
-    // }
-    // printf("\n");
-    // printf("%d %d\n",visitied[0],visitied[1]);
     if (sz==K){
         for (int i=1;i<=N;i++){
             for (int j=1;j<=M;j++){
                 temp_mp[i][j]=mp[i][j];
             }
         }
-        for (int i=0;i<10;i++){
-            visitied[i]=0;
-        }
         for (int&i:_choose_v){
-            printf("%d ",i);
+            //printf("%d ",i);
             rotate(v[i][0],v[i][1],v[i][2]);
-            for (int j=1;j<=N;j++){
-                int sum=0;
-                for (int k=1;k<=M;k++){
-                    sum+=temp_mp[j][k];
-                }
-                if (sum<ret){
-                    ret=sum;
-                }
+        }
+        for (int j=1;j<=N;j++){
+            int sum=0;
+            for (int k=1;k<=M;k++){
+                sum+=temp_mp[j][k];
+            }
+            if (sum<ret){
+                ret=sum;
             }
         }
-        printf("\n");
+        //printf("\n");
         return;
     }
     
-    for (int i=0;i<K;i++){
-        if (find(_choose_v.begin(),_choose_v.end(),i)==_choose_v.end()){
-            _choose_v.push_back(i);
-            visitied[i]=1;
-            choose(sz+1,_choose_v);
-            visitied[i]=0;
-            _choose_v.pop_back();    
-        }
+    for (int i=sz;i<K;i++){
+        swap(_choose_v[i],_choose_v[sz]);
+        choose(sz+1,_choose_v);
+        swap(_choose_v[i],_choose_v[sz]);
     }
 }
 
@@ -92,6 +78,7 @@ int main()
             temp_v.push_back(temp);
         }
         v.push_back(temp_v);
+        choose_v.push_back(i);
     }
 
     choose(0,choose_v);
