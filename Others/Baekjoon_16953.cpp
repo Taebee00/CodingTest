@@ -4,7 +4,7 @@ using namespace std;
 
 int main()
 {
-    int A,B,cnt=0;
+    long long A,B,cnt=0;
     cin >> A >> B;
 
     while(B!=A&&B!=0){
@@ -12,10 +12,12 @@ int main()
         if (!(B%2)){
             B=B/2;
         }
-        else{
+        else if(B%10==1){
             B=B/10;
         }
-        
+        else{
+            break;
+        }
         cnt++;
     }
     if (A==B){

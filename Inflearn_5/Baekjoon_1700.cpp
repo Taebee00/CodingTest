@@ -2,56 +2,46 @@
 
 using namespace std;
 
+int N, K, arr[100], visitied[100]={0,},cnt=0;
+map<int,vector<int>> mp;
+vector<int> v;
+
 int main()
 {
-    int N, K, arr[100], visitied[101], cnt=0;
-    vector<int> multitap;
     cin >> N >> K;
     for (int i=0;i<K;i++){
         cin >> arr[i];
+        mp[arr[i]].push_back(i);
     }
-    int idx, sz=0;
-    while(idx<K){
-        if (sz<N){
-            if (!visitied[arr[idx]]){
-                multitap.push_back(arr[idx]);
-                visitied[arr[idx]]=1;
-                sz++;
+    for (int i=0;i<K;i++){
+        if (v.size()!=N){
+            if (!visitied[arr[i]]){
+                v.push_back(arr[i]);
+                visitied[arr[i]]=1;
             }
         }
-        else if (!visitied[idx]){
-            int mxidx=idx;
-            int mx=-1;
-            for (int i=0;i<N;i++){
-                for (int j=idx+1;j<K;j++){
-                    if (arr[j]==multitap[i]){
-                        if (j>mxidx){
-                           mxidx=j;
-                           mx=i;
-                        }
-                        break;
+        else{
+            if (!visitied[arr[i]]){
+                int mx=0,mxidx;
+                for (int k=0;k<v.size();k++){
+                    if (mp[v[k]].size()&&mp[v[k]][0]>mx){
+                        mx=mp[v[k]][0];
+                        mxidx=k;
                     }
-                    if (j==K-1){
-                        
+                    else if (!mp[v[k]].size()){
+                        mx=INT_MAX;
+                        mxidx=k;
                     }
+                    
                 }
-            }
-            if (mx!=-1)
-            {
-                multitap.erase(multitap.begin()+mx);
-                visitied[multitap[mx]]=0;
-                multitap.insert(multitap.begin()+mx,arr[idx]);
-                cnt++;
-            }
-            else{
-                multitap.erase(multitap.begin()+mx);
-                visitied[multitap[mx]]=0;
-                multitap.insert(multitap.begin()+mx,arr[idx]);
+                visitied[v[mxidx]]=0;
+                v.erase(v.begin()+mxidx);
+                v.push_back(arr[i]);
+                visitied[arr[i]]=1;
                 cnt++;
             }
         }
-        idx++;
+        mp[arr[i]].erase(mp[arr[i]].begin());
     }
     cout << cnt;
-
 }
