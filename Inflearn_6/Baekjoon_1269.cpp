@@ -8,7 +8,7 @@ vector<int> B(M);
 
 void find(int num){
     int temp=int(lower_bound(B.begin(),B.end(),num)-B.begin());
-    if (temp<N&&B[temp]==num){
+    if (temp<M&&B[temp]==num){
         cnt++;
     }
 }
@@ -27,7 +27,6 @@ int main()
         cin >> temp;
         B.push_back(temp);
     }
-    sort(A.begin(),A.end());
     sort(B.begin(),B.end());
     for (int i=0;i<A.size();i++){
         find(A[i]);
