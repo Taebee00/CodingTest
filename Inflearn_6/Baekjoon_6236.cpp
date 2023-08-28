@@ -3,22 +3,8 @@
 using namespace std;
 
 int N, M;
+long long low=0, high=1e18,ret;
 vector<int> v;
-
-int recur(int day,int money,int mid)
-{
-    printf("%d %d %d\n",day,v[day],money);
-    if (day==N-1){
-        return 0;
-    }
-    if (v[day]<money){
-        recur(day+1,mid,mid);
-    }
-    else{
-        recur(day+1,mid,mid);
-        recur(day+1,money-v[day],mid);
-    }
-}
 
 int main()
 {
@@ -27,11 +13,37 @@ int main()
         int temp;
         cin >> temp;
         v.push_back(temp);
+        low=max((long long)temp,low);
     }
-    int low=0, high=100000;
-    // while(low<=high){
-    //     int mid=(low+high)/2;
-    //     recur(0,true,mid);
-    // }
-    recur(0,0,500);
+    
+    while(low<=high){
+        long long mid=(low+high)/2;
+        long long temp=0,cnt=0;
+        for (int i:v){
+            if ((long long)i>temp){
+                cnt++;
+                temp=mid;
+            }
+           temp-=(long long)i;
+        }
+        if (cnt<=(long long)M){
+            high=mid-1; 
+            ret=mid;
+        }
+        else low=mid+1;
+    }
+    printf("%lld",ret);
+    long long mid=500;
+    long long temp=0,cnt=0;
+    for (int i:v){
+        if ((long long)i>temp){
+            cnt++;
+            temp=mid;
+            printf("1 %d\n",temp);
+        }
+        else{
+            temp-=(long long)i;
+            printf("0 %d\n",temp);
+        }
+    }
 }

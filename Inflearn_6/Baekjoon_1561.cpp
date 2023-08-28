@@ -2,19 +2,6 @@
 
 using namespace std;
 
-bool cmp(const pair<int,int> &a,const pair<int,int> &b)
-{
-    if (a.second>b.second){
-        return true;
-    }
-    else if (a.second==b.second){
-        return a.first < b.first;
-    }
-    else{
-        return false;
-    }
-}
-
 int main()
 {
     int N,M;
@@ -25,41 +12,40 @@ int main()
         cin >> temp;
         v.push_back(temp);
     }
-    long long low=1, high=INT_MAX,tm=0;
+
+    long long low=0, high=60000000004,tm=__LONG_LONG_MAX__;
+
     while(low<=high){
         long long mid=(low+high)/2;
         long long cnt=0;
-        for (int &i:v){
+        for (int i:v){
             cnt+=mid/i+1;
         }
         if (cnt>=N){
             high=mid-1;
-            tm=mid;
+            tm=min(mid,tm);
         }
-        else{
-            low=mid+1;
-        }
+        else low=mid+1;
     }
-    int mn=tm-(tm%v[0]);
-    int cnt=0;
-    for (int& i:v){
-        cnt+=tm/i;
-        if (tm-(tm%i)<mn){
-            mn=tm-(tm%i);
-        }
+
+    long long cnt=0, temp_tm=0;
+    for (int i:v){
+        cnt+=tm/(long long)i;
+        temp_tm=max(temp_tm,tm%(long long)i);
     }
-    cout << tm << " " << cnt << " " << mn << "\n";
-    for (int i=mn;i<=tm;i++){
-        for (int j=0;j<M;j++){
-            if (i%v[j]==0){
-                cout << i << " " << j+1 << "\n";
+    temp_tm=tm-temp_tm;
+    //printf("tm: %lld temp_tm: %lld cnt: %lld\n",tm,temp_tm,cnt);
+    while(1){
+        for (int i=0;i<v.size();i++){
+            if (tm-(tm%v[i])==temp_tm){
+                //printf("%lld:%d ",temp_tm,i); 
                 cnt++;
             }
-            
-            if (cnt==N){
-                cout << j+1;
+            if (cnt==N) {
+                printf("%d",i+1); 
                 return 0;
             }
         }
+        temp_tm++;
     }
 }
