@@ -33,17 +33,17 @@ int main()
         else low=mid+1;
     }
     printf("%lld",ret);
-    long long mid=500;
-    long long temp=0,cnt=0;
-    for (int i:v){
-        if ((long long)i>temp){
-            cnt++;
-            temp=mid;
-            printf("1 %d\n",temp);
-        }
-        else{
-            temp-=(long long)i;
-            printf("0 %d\n",temp);
-        }
-    }
+    // long long mid=500;
+    // long long temp=0,cnt=0;
+    // for (int i:v){
+    //     if ((long long)i>temp){
+    //         cnt++;
+    //         temp=mid;
+    //         printf("1 %d\n",temp);
+    //     }
+    //     else{
+    //         temp-=(long long)i;
+    //         printf("0 %d\n",temp);
+    //     }
+    // }
 }
