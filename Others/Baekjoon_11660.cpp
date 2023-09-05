@@ -3,7 +3,7 @@
 using namespace std;
 
 int N,M, mp[1025][1025],sum_mp[1025][1025];
-int tc[4][100000];
+int tc[100000][4];
 
 int main()
 {
