@@ -36,6 +36,10 @@ int main()
 {
     cin >> T;
     for (int i=0;i<T;i++){
+        for (int i=0;i<32;i++){
+            mp[i]=0;
+        }
+        mn=INT_MAX;
         v.clear();
         cin >> N; 
         for (int j=0;j<N;j++){
