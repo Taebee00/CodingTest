@@ -1,20 +1,25 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
 int main()
-{	
-	int num, armor, cnt = 0;
-	int arr[15000];
-	cin >> num >> armor;
-	for (int i = 0;i < num;i++) {
-		cin >> arr[i];
-	}
-	for (int i = 0;i < num - 1;i++) {
-		for (int j = i+1;j < num;j++) {
-			if (arr[i] + arr[j] == armor) {
-				cnt++;
-			}
+{
+	int N, M, answer=0;
+	map<int,int> mp;
+	
+	cin >> N >> M;
+
+	for (int i=0;i<N;i++){
+		int num;
+		cin >> num;
+		auto j=mp.find(M-num);
+		if (j==mp.end()){
+			mp[num]=1;
+		}
+		else{
+			answer++;
+			mp.erase(j);
 		}
 	}
-	cout << cnt;
+	cout << answer;
 }

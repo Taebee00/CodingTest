@@ -1,20 +1,17 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
 int main()
 {
+	int n='z'-'a'+1;
+	int arr[n]={0,};
 	string str;
 	cin >> str;
-	for (char i = 'a';i <= 'z';i++)
-	{
-		int cnt = 0;
-		for (auto j : str)
-		{
-			if (j == i)
-			{
-				cnt++;
-			}
-		}
-		cout << cnt << " ";
+	for (int i=0;i<str.length();i++){
+		arr[str[i]-'a']++;
+	}
+	for (int i:arr){
+		cout << i << " ";
 	}
 }

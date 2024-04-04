@@ -1,42 +1,28 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
 int main()
 {
-	int small[9];
-	vector<int> rsmall;
-	int flag = 0;
-	for (int i = 0;i < 9;i++) {
-		cin >> small[i];
+	vector<int> small;
+	int sum=0;
+	for (int i=0;i<9;i++){
+		int n;
+		cin >> n;
+		small.push_back(n);
+		sum+=n;
 	}
-	for (int i = 0;i < 8;i++){
-		for (int j = i + 1;j < 9;j++){
-			int sum = 0;
-			for (int k = 0;k < 9;k++){
-				if (k != i && k != j)
-				{
-					sum += small[k];
+	for (int i=0;i<8;i++){
+		for (int j=i+1;j<9;j++){
+			if (sum-(small[i]+small[j])==100){
+				small.erase(small.begin()+i); 
+				small.erase(small.begin()+j-1);
+				sort(small.begin(),small.end());
+				for (auto i : small){
+					cout << i << "\n";
 				}
-			}
-			if (sum == 100){
-				for (int k=0;k<9;k++){
-					if (k != i && k != j){
-						rsmall.push_back(small[k]);
-					}
-				}
-				flag = 1;
-				break;
-			}
-			if (flag == 1) {
-				break;
+				return 0;
 			}
 		}
-		if (flag == 1) {
-			break;
-		}
-	}
-	sort(rsmall.begin(), rsmall.end());
-	for (auto i : rsmall) {
-		cout << i << "\n";
 	}
 }
