@@ -1,48 +1,50 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-int n,m,rect_num,area_cnt=0,area_size=0,arr[100][100]={0,},visitied[100][100]={0,};
-int leftx,lefty,rightx,righty;
-int dx[4]={0,1,0,-1}, dy[4]={-1,0,1,0};
-vector<int> num_arr;
+int M, N, K, answer_cnt;
+int arr[100][100]={0,}, visitied[100][100]={0,};
+int dy[4]={-1,0,1,0};
+int dx[4]={0,1,0,-1};
+vector<int> answer_v;
 
-void dfs(int sy,int sx){
-    visitied[sy][sx]=1;
-    area_size++;
+int dfs(int y,int x){
+    int sum=1;
+    visitied[y][x]=1;
     for (int i=0;i<4;i++){
-        int x=sx+dx[i];
-        int y=sy+dy[i];
-        if (x>=0&&x<m&&y>=0&&y<n){
-            if ((!arr[y][x])&&(!visitied[y][x])){
-                dfs(y,x);
-            }
-        }
+        int ny=y+dy[i], nx=x+dx[i];
+        if (ny<0||nx<0||ny>=M||nx>=N) continue;
+        if (visitied[ny][nx]||arr[ny][nx]) continue;
+        sum+=dfs(ny,nx);
     }
+    return sum;
 }
 
-int main(){
-    cin >> n >> m >> rect_num;
-    for (int i=0;i<rect_num;i++){
-        cin >> leftx >> lefty >> rightx >> righty;
-        for (int j=leftx;j<rightx;j++){
-            for (int k=lefty;k<righty;k++){
-                arr[n-k-1][j]=1;
+int main()
+{
+    cin >> M >> N >> K;
+
+    for (int i=0;i<K;i++){
+        int lx,ly,rx,ry;
+        cin >> lx >> ly >> rx >> ry;
+
+        for (int j=ly;j<ry;j++){
+            for (int k=lx;k<rx;k++){
+                arr[j][k]=1;
+            }
+        }
+    } 
+
+    for (int i=0;i<M;i++){
+        for (int j=0;j<N;j++){
+            if (arr[i][j]==0&&(!visitied[i][j])){
+                answer_v.push_back(dfs(i,j));
+                answer_cnt++;
             }
         }
     }
-    for (int i=0;i<n;i++){
-        for (int j=0;j<m;j++){
-            if (!visitied[i][j]&&!arr[i][j]){
-                dfs(i,j);
-                area_cnt++;
-                num_arr.push_back(area_size);
-                area_size=0;
-            }
-        }
-    }
-    cout << area_cnt << "\n";
-    sort(num_arr.begin(),num_arr.end());
-    for (auto&k:num_arr){
-        cout << k << " ";
-    }
+
+    cout << answer_cnt << "\n";
+    sort(answer_v.begin(),answer_v.end());
+    for (int i:answer_v) cout << i << " ";
 }
