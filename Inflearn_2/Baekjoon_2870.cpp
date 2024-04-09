@@ -1,36 +1,43 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
 bool cmp(string a, string b){
-    if (a.size()==b.size()){
-        return a < b;
+    if (a.length()==b.length()){
+        return a<b;
     }
-    return a.size() < b.size();
+    return a.length() < b.length();
 }
 
-int main(){
-    int num;
+int main()
+{
+    int N;
     string str;
-    vector<string> v;
-    cin >> num;
-    for (int i=0;i<num;i++){
-        string sth="";
+    vector<string> num_v;
+
+    cin >> N;
+    
+    for (int i=0;i<N;i++){
         cin >> str;
+        string num="";
+
         for (int j=0;j<str.length();j++){
             if (str[j]>='0'&&str[j]<='9'){
-                sth+=str[j];
-            }
-            if (sth.size()&&(j==str.length()-1||(str[j]>='a'&&str[j]<='z'))){
-                while (sth.size()>1&&sth[0]=='0'){
-                    sth.erase(0,1);
+                if (num=="0"){
+                    num=str[j]; 
                 }
-                v.push_back(sth);
-                sth="";
+                else{
+                    num+=str[j];
+                }
+                if (j==str.length()-1||(str[j+1]>='a'&&str[j+1]<='z')){
+                    num_v.push_back(num);
+                    num="";
+                }
             }
         }
     }
-    sort(v.begin(),v.end(),cmp);
-    for (auto&i:v){
-        cout << i << "\n";
-    }
+
+    sort(num_v.begin(),num_v.end(),cmp);
+
+    for (string i:num_v) cout << i << "\n";
 }

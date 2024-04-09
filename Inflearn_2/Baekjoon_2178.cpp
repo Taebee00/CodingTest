@@ -1,37 +1,46 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-int n, m, visitied[100][100] = { 0, };
-int dx[4] = { 0,1,0,-1 }, dy[4] = { -1,0,1,0 };
-char arr[100][100];
+int dy[4]={-1,0,1,0}, dx[4]={0,1,0,-1};
 
-int bfs(int sx, int sy, int lx, int ly) {
-	queue<pair<int, int>> q;
-	visitied[sx][sy] = 1;
-	q.push({ sx, sy });
-	while (q.size()) {
-		pair<int, int> num = q.front();
-		q.pop();
-		for (int i = 0;i < 4;i++) {
-			int x = num.first + dx[i];
-			int y = num.second + dy[i];
-			if (x >= 0 && x < n && y >= 0 && y < m && visitied[x][y] == 0 && arr[x][y] == '1') {
-				visitied[x][y] = visitied[num.first][num.second] + 1;
-				if (x == lx && y == ly) {
-					return visitied[lx][ly];
-				}
-				q.push({ x,y });
-			}
+int N, M, visitied[101][101]={0,};
+char miro[101][101];
+
+void bfs(int y, int x){
+	queue<pair<int,int>> que;
+
+	visitied[y][x]=1;
+	que.push({y,x});
+
+	while(que.size()){
+		int qy, qx, ny, nx;
+		tie(qy,qx)=que.front();
+		que.pop();
+
+		for (int i=0;i<4;i++){
+			ny=qy+dy[i];
+			nx=qx+dx[i];
+			if (miro[ny][nx]=='0') continue;
+			if (ny<1||nx<1||ny>N||nx>M) continue;
+			if (visitied[ny][nx]) continue;
+			visitied[ny][nx]=visitied[qy][qx]+1;
+			que.push({ny,nx});
 		}
 	}
 }
 
-int main() {
-	cin >> n >> m;
-	for (int i = 0;i < n;i++) {
-		for (int j = 0;j < m;j++) {
-			cin >> arr[i][j];
+int main()
+{
+	cin >> N >> M;
+	
+	for (int i=1;i<=N;i++){
+		for (int j=1;j<=M;j++){
+			cin >> miro[i][j];
 		}
 	}
-	cout << bfs(0, 0, n - 1, m - 1);
+
+	bfs(1,1);
+
+	cout << visitied[N][M];
 }

@@ -1,25 +1,34 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL); cout.tie(NULL);
-	int input_1, input_2; 
-	map<int, string> name_1; map<string, int> name_2;
-	string str;
-	cin >> input_1 >> input_2;
-	for (int i = 0;i < input_1;i++) {
-		cin >> str;
-		name_1[i] = str; name_2[str] = i;
+	int N, M;
+	vector<string> name_v, answer_v;
+	map<string,int> name_mp;
+
+	cin >> N >> M;
+
+	for (int i=1;i<=N;i++){
+		string name;
+		cin >> name;
+		name_mp[name]=i;
+		name_v.push_back(name);
 	}
-	for (int i = 0;i < input_2;i++) {
-		cin >> str;
-		if (atoi(str.c_str())) {
-			cout << name_1[atoi(str.c_str()) - 1] << '\n';
+
+	for (int i=0;i<M;i++){
+		string input;
+		cin >> input;
+		if (input[0]>='A'&&input[0]<='Z'){
+			answer_v.push_back(to_string(name_mp[input]));
+			continue;
 		}
-		else {
-			cout << name_2[str] + 1 << '\n';
+		else{
+			answer_v.push_back(name_v[stoi(input)-1]);
 		}
+	}
+	for (auto i:answer_v){
+		cout << i << " ";
 	}
 }
