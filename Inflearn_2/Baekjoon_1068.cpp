@@ -1,38 +1,48 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-int num, node, cut, cnt=0, flag[100]={0,}; 
-vector<int> v[100];
+int N, root, erase_node, visitied[50]={0,};
+vector<int> vec_arr[50];
 
-void dfs(int x){
-    flag[x]=1;
-    if (v[x].size()){
-        for (auto&j:v[x]){
-            dfs(j);
-        }
+void erase_dfs(int node){
+    visitied[node]=1;
+    for (int i:vec_arr[node]){
+        if (!visitied[i]) erase_dfs(i);
     }
 }
 
-int main(){
-    cin >> num;
-    for (int i=0;i<num;i++){
+int find_leaf_dfs(int node){
+    int cnt=0;
+    int sum=0;
+    for (int i:vec_arr[node]){
+        if (visitied[i]==0){
+            cnt++;
+            sum+=find_leaf_dfs(i);
+        }
+    }
+    if (cnt==0) return 1;
+    else return sum;
+}
+
+int main()
+{
+    cin >> N;
+
+    for (int i=0;i<N;i++){
+        int node;
         cin >> node;
         if (node==-1){
+            root=i;
             continue;
         }
-        v[node].push_back(i);
+        vec_arr[node].push_back(i);
     }
-    cin >> cut;
-    dfs(cut);
-    for (int i=0;i<num;i++){
-        if (v[i].size()==1&&v[i][0]==cut){
-            cnt++;
-        }
-    }
-    for (int i=0;i<num;i++){
-        if (!v[i].size()&&!flag[i]){
-            cnt++;
-        }
-    }
-    cout << cnt;
+
+    cin >> erase_node;
+
+    erase_dfs(erase_node);
+
+    if (erase_node==root) cout << 0;
+    else cout << find_leaf_dfs(root);
 }

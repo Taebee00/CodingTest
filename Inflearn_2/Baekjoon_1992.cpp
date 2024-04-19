@@ -7,8 +7,6 @@ char arr[64][64];
 string answer;
 
 void recur(int y, int x, int sz){
-
-    printf("%d, %d, %d\n",y,x,sz);
     
     char clr=arr[y][x];
     int flag=0;

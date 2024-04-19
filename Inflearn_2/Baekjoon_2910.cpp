@@ -1,32 +1,49 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-bool cmp(pair<long long,pair<int,int>> &a,pair<long long,pair<int,int>> &b){
-    if (a.second.first==b.second.first){
-        return a.second.second < b.second.second;
+int N, C;
+map<int,pair<int,int>> mp;
+struct st{
+    int num;
+    int freq;
+    int idx;
+};
+vector<struct st> v; 
+
+bool cmp(struct st &a, struct st &b){
+    if (a.freq==b.freq){
+        return a.idx<b.idx;
     }
-    return a.second.first > b.second.first;
+    return a.freq>b.freq;
 }
 
-long long num, mx;
-map<long long,pair<int,int>> arr;
+int main()
+{
+    cin >> N >> C;
 
-int main(){
-    int order=0;
-    cin >> num >> mx;
-    long long input;
-    for (int i=0;i<num;i++){
-        cin >> input;
-        arr[input].first++;
-        if (arr[input].first==1){
-            arr[input].second=order++;
+    for (int i=0;i<N;i++){
+        int num;
+        cin >> num;
+        if (mp.find(num)==mp.end()){
+            mp[num].second=i;
         }
+        mp[num].first++;
     }
-    vector<pair<long long,pair<int,int>>> v(arr.begin(),arr.end());
+
+    for (auto i:mp){
+        struct st temp;
+        temp.num=i.first;
+        temp.freq=i.second.first;
+        temp.idx=i.second.second;
+        v.push_back(temp);
+    }
+
     sort(v.begin(),v.end(),cmp);
-    for (auto&i:v){
-        for (int j=0;j<i.second.first;j++){
-            cout << i.first << " ";
+
+    for (auto i:v){
+        for (int j=0;j<i.freq;j++){
+            cout << i.num << " ";
         }
     }
 }

@@ -1,26 +1,48 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-int main(){
-    string PS; 
-    while(true){
-        getline(cin,PS);
-        if (PS.length()==1&&PS[0]=='.') break;
+int main()
+{
+    string str;
+    vector<string> answer_v;
+
+    while(1){
         stack<char> stk;
-        for (auto&j:PS){
-            if (j=='['||j==']'||j=='('||j==')'){
-                if (stk.size()&&stk.top()=='('&&j==')'){
+        int flag=0;
+        getline(cin,str);
+
+        if (str=="."){
+            break;
+        }
+
+        for (char i:str){
+            if (i=='('||i=='['){
+                stk.push(i);
+            }
+            else if (i==')'){
+                if (stk.size()&&stk.top()=='('){
                     stk.pop();
                 }
-                else if (stk.size()&&stk.top()=='['&&j==']'){
+                else{
+                    flag=1;
+                    break;
+                }
+            }
+            else if (i==']'){
+                if (stk.size()&&stk.top()=='['){
                     stk.pop();
                 }
-                else stk.push(j);
+                else{
+                    flag=1;
+                    break;
+                }
             }
         }
-        if (stk.size()){
-            cout << "no" << "\n";
-        }
-        else cout << "yes" << "\n";
+        if (stk.size()) flag=1;
+
+        if (flag) answer_v.push_back("no");
+        else answer_v.push_back("yes");
     }
+    for (string i:answer_v) cout << i << "\n";
 }

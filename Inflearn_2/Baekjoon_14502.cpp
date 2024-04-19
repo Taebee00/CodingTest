@@ -1,73 +1,66 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-int h,w,mp[8][8],mp_2[8][8], visitied[8][8]={0,};
-vector<pair<int,int>> v;
-int dx[4]={0,1,0,-1}, dy[4]={-1,0,1,0};
+vector<pair<int,int>> choice_v;
+vector<vector<pair<int,int>>> choice_v2;
+vector<pair<int,int>> v; 
+vector<pair<int,int>> virus_v;
+int N, M, arr[8][8], visitied[8][8], temp[8][8], answer=64, cnt=0, wall_cnt=3;
+int dy[4]={-1,0,1,0};
+int dx[4]={0,1,0,-1};
 
-void init(){
-    for (int i=0;i<8;i++){
-        for (int j=0;j<8;j++){
-            visitied[i][j]=0;
-            mp_2[i][j]=mp[i][j];
-        }
+void choose(int n, int r,int depth){
+    if (choice_v.size()==3){
+        choice_v2.push_back(choice_v);
+        return;
+    }
+    for (int i=depth+1;i<n;i++){
+        choice_v.push_back(v[i]);
+        choose(n,r,i);
+        choice_v.pop_back();
     }
 }
 
-void dfs(int i,int j){
-    visitied[i][j]=1;
-    mp_2[i][j]=2;
-    for (int k=0;k<4;k++){
-        int x=j+dx[k]; int y=i+dy[k];
-        if (x>=0&&x<w&&y>=0&&y<h){
-            if (!visitied[y][x]&&(mp_2[y][x]==0||mp_2[y][x]==2)){
-                dfs(y,x);
-            }
-        }
+int dfs(int y,int x){
+    int sum=1;
+    visitied[y][x]=1;
+    for (int i=0;i<4;i++){
+        int ny=y+dy[i];
+        int nx=x+dx[i];
+        if (ny<0||nx<0||ny>=N||nx>=M) continue;
+        if (visitied[ny][nx]||temp[ny][nx]==1) continue;
+        sum+=dfs(ny,nx); 
     }
+    return sum;
 }
 
-int find(){
-    for (int i=0;i<h;i++){
-        for (int j=0;j<w;j++){
-            if (mp_2[i][j]==2&&!visitied[i][j]){
-                dfs(i,j);
-            }
-        }
-    }
-    int cnt=0;
-    for (int i=0;i<h;i++){
-        for (int j=0;j<w;j++){
-            if (!mp_2[i][j]) cnt++;
-        }
-    }
-    return cnt;
-}
+int main()
+{    
+    cin >> N >> M;
 
-int main(){
-    cin >> h >> w;
-    for (int i=0;i<h;i++){
-        for (int j=0;j<w;j++){
-            cin >> mp[i][j];
-            mp_2[i][j]=mp[i][j];
-            v.push_back({i,j});
+    for (int i=0;i<N;i++){
+        for (int j=0;j<M;j++){
+            cin >> arr[i][j];
+            if (arr[i][j]==0) v.push_back({i,j});
+            if (arr[i][j]==2) virus_v.push_back({i,j});
+            if (arr[i][j]==1) wall_cnt++;
         }
     }
-    int max=0;
-    for (int i=0;i<v.size()-2;i++){
-        for (int j=i+1;j<v.size()-1;j++){
-            for (int k=j+1;k<v.size();k++){
-                if (!mp_2[v[i].first][v[i].second]&&!mp_2[v[j].first][v[j].second]&&!mp_2[v[k].first][v[k].second]){
-                    mp_2[v[i].first][v[i].second]=1;
-                    mp_2[v[j].first][v[j].second]=1;
-                    mp_2[v[k].first][v[k].second]=1;
-                    int cnt=find();
-                    if (cnt>max) max=cnt;
-                    //cout << cnt << "\n";
-                    init();
-                }
-            }
+
+    choose(v.size(),3,-1);
+
+    for (auto i:choice_v2){
+        cnt=0;
+        memcpy(temp,arr,sizeof(arr));
+        fill(&visitied[0][0],&visitied[0][0]+8*8,0);
+        for (auto j:i){
+            if (temp[j.first][j.second]==0) temp[j.first][j.second]=1;
         }
+        for (auto j:virus_v){
+            if (visitied[j.first][j.second]==0) cnt+=dfs(j.first,j.second);
+        }
+        answer=min(cnt,answer);
     }
-    cout << max;
+    cout << N*M-(answer+wall_cnt);
 }

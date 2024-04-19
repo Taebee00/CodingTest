@@ -1,55 +1,48 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-int h,w,visitied[54][54]={0,};
-char mp[54][54];
-int dx[4]={0,1,0,-1}, dy[4]={-1,0,1,0};
-vector<pair<int,int>> v;
-queue<pair<int,int>> q;
-int ret=1;
+int N, M, answer=0, visitied[50][50]={0,};
+int dy[4]={-1,0,1,0}, dx[4]={0,1,0,-1};
+char arr[50][50];
+vector<pair<int,int>> land_v;
 
-void init(){
-    for (int i=0;i<h;i++){
-        for (int j=0;j<w;j++){
-            visitied[i][j]=0;
-        }
-    }
-}
-
-int bfs(int _y,int _x){
-    int mx=0;
-    q.push({_y,_x});
-    visitied[_y][_x]=1;
-    while (q.size()){
-        pair<int,int> loc=q.front();
+int bfs(int y, int x){
+    int ret=0;
+    fill(&visitied[0][0],&visitied[0][0]+50*50,0);
+    visitied[y][x]=1;
+    queue<pair<int,int>> que;
+    que.push({y,x});
+    while(que.size()){
+        pair<int,int> temp=que.front();
+        que.pop();
         for (int i=0;i<4;i++){
-            int x=loc.second+dx[i]; int y=loc.first+dy[i];
-            if (x>=0&&x<w&&y>=0&&y<h&&mp[y][x]=='L'&&!visitied[y][x]){
-                visitied[y][x]=visitied[loc.first][loc.second]+1;
-                q.push({y,x});
-                mx=visitied[y][x];
-            }
+            int ny=temp.first+dy[i];
+            int nx=temp.second+dx[i];
+            if (ny<0||nx<0||ny>=N||nx>=M) continue;
+            if (visitied[ny][nx]||arr[ny][nx]=='W') continue;
+            visitied[ny][nx]=visitied[temp.first][temp.second]+1;
+            ret=max(visitied[ny][nx],ret);
+            que.push({ny,nx});
         }
-        q.pop();
     }
-    return mx;
+    return ret-1;
 }
 
-int main(){
-    cin >> h >> w;
-    for (int i=0;i<h;i++){
-        for (int j=0;j<w;j++){
-            cin >> mp[i][j];
-            if (mp[i][j]=='L'){
-                v.push_back({i,j});
-            }
+int main()
+{
+    cin >> N >> M;
+
+    for (int i=0;i<N;i++){
+        for (int j=0;j<M;j++){
+            cin >> arr[i][j];
+            if (arr[i][j]=='L') land_v.push_back({i,j});
         }
     }
-    for (int i=0;i<v.size();i++){
-        if (!visitied[v[i].first][v[i].second]){
-            ret=max(bfs(v[i].first,v[i].second),ret);
-            init();
-        }
-    }  
-    cout << ret-1;
+
+    for (int i=0;i<land_v.size();i++){
+        answer=max(bfs(land_v[i].first,land_v[i].second),answer);
+    }
+
+    cout << answer;
 }

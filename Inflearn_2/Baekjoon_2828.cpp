@@ -1,29 +1,28 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-int n,m,apple_num,apple,arr[11],cnt=0;
+int main()
+{
+    int N, M, J;
+    int box_left=1;
+    int answer=0;
 
-int main(){
-    cin >> n >> m;
-    cin >> apple_num;
-    int left=1, right=m;
-    for (int i=0;i<apple_num;i++){
+    cin >> N >> M >> J;
+
+    for (int i=0;i<J;i++){
+        int apple;
         cin >> apple;
-        if (apple>=left&&apple<=right){
-            continue;
+        if (apple<box_left){
+            answer+=(box_left-apple);
+            box_left=apple;
         }
-        else if (apple<left){
-            while(apple<left){
-                left--; right--;
-                cnt++;
-            }
+        else if (apple>box_left+M-1){
+            answer+=(apple-(box_left+M-1));
+            box_left=box_left+(apple-(box_left+M-1));
         }
-        else if (apple>right){
-            while(apple>right){
-                left++; right++;
-                cnt++;
-            }
-        }
+        else continue;
     }
-    cout << cnt;
+
+    cout << answer;
 }
