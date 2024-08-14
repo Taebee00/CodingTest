@@ -4,23 +4,23 @@ using namespace std;
 
 int main()
 {
-    int N;
-    cin >> N;
+    int N; double mx=0;
     vector<double> v;
-    double mx=0;
-    double multi=1;
+    cin >> N;
+
     for (int i=0;i<N;i++){
-        double temp;
-        cin >> temp;
-        v.push_back(temp);
-        if (multi*temp>=1){
-            multi*=temp;
-            mx=max(mx,multi);
-        }
-        else{
-            mx=max(mx,temp);
-            multi=1;
-        }
+        double num;
+        cin >> num;
+        v.push_back(num);
     }
+    
+    double sum=1;
+    for (double i:v){
+        if (sum<1) sum=1;
+        sum*=i;
+        if (sum>mx) mx=sum;
+    }
+    if (sum>mx) mx=sum;
+
     printf("%.3f",mx);
 }

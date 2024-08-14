@@ -1,28 +1,23 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
 int main()
 {
-    int N,ret=1;
+    int N, mx=1;
+    vector<pair<int,int>> v;
     cin >> N;
-    vector<int> v;
-    int cnt[1001];
-    fill(cnt,cnt+1001,1);
+
     for (int i=0;i<N;i++){
-        int temp;
-        cin >> temp;
-        v.push_back(temp);
-    }
-    for (int i=1;i<N;i++){
-        int mx=1;
+        int num, cnt=1;
+        cin >> num;
         for (int j=0;j<i;j++){
-            if (v[j]<v[i]&&cnt[j]>=mx){
-                mx=cnt[j];
-                cnt[i]=mx+1;
+            if (v[j].first<num){
+                cnt=max(cnt,v[j].second+1);
+                mx=max(cnt,mx);
             }
         }
-        ret=max(cnt[i],ret);
+        v.push_back({num,cnt});
     }
-    cout << ret;
+    cout << mx;
 }
-

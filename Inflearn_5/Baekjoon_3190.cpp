@@ -2,65 +2,51 @@
 
 using namespace std;
 
-int N, K, L, mp[100][100]={0,},dir=0,snake_x=0,snake_y=0,dir_mp[100][100]={0,};
+int N, K, L, arr[100][100]={0,}, dir_arr[100][100]={0,}, visitied[100][100]={0,};
 int dy[4]={0,1,0,-1}, dx[4]={1,0,-1,0};
-queue<pair<int,char>> q;
-pair<int,int> tail={0,0};
-
-int snake(){
-    int cnt=0;
-    dir=0;
-    mp[0][0]=1;
-    while(1)
-    {
-        // printf("%d\n",cnt);
-        // for (int i=0;i<N;i++){
-        //     for (int j=0;j<N;j++){
-        //         printf("%d ",mp[i][j]);
-        //     }
-        //     printf("\n");
-        // }
-        dir_mp[snake_y][snake_x]=dir;
-        snake_y+=dy[dir];
-        snake_x+=dx[dir];
-        //printf("%d, %d %d\n",snake_y,snake_x,dir);
-        if (snake_y<0||snake_y>=N||snake_x<0||snake_x>=N||mp[snake_y][snake_x]==1){
-            break;
-        }
-        if (mp[snake_y][snake_x]!=2){
-            mp[tail.first][tail.second]=0;
-            int tail_dir=dir_mp[tail.first][tail.second];
-            tail.first+=dy[tail_dir];
-            tail.second+=dx[tail_dir];
-        }
-        mp[snake_y][snake_x]=1;
-        cnt++;
-        if (q.size()&&cnt==q.front().first){
-            if (q.front().second=='L'){
-                dir=dir==0?3:dir-1;
-            }
-            else{
-                dir=(dir+1)%4;
-            }
-            q.pop();
-        }      
-    }
-    return cnt;
-}
+char tm_arr[10001]={0,};
 
 int main()
 {
     cin >> N >> K;
+
     for (int i=0;i<K;i++){
-        int apple_y,apple_x;
-        cin >> apple_y >> apple_x;
-        mp[apple_y-1][apple_x-1]=2;
+        int a,b;
+        cin >> a >> b;
+        arr[a-1][b-1]=1;
     }
+
     cin >> L;
+
     for (int i=0;i<L;i++){
-        int sec; char temp_dir;
-        cin >> sec >> temp_dir;
-        q.push({sec,temp_dir});
+        int tm; char dir;
+        cin >> tm >> dir;
+        tm_arr[tm]=dir;
     }
-    cout << snake()+1;
+
+    int hy=0, hx=0, ty=0, tx=0, tm=0, dir=0;
+    visitied[0][0]=1;
+
+    while(1){
+        tm++;
+        dir_arr[hy][hx]=dir;
+        hy+=dy[dir]; hx+=dx[dir];
+        if (hy<0||hx<0||hy>=N||hx>=N||visitied[hy][hx]){
+            break;
+        }
+        visitied[hy][hx]=1;
+        if (arr[hy][hx]) arr[hy][hx]=0;
+        else{
+            visitied[ty][tx]=0;
+            int temp_dir=dir_arr[ty][tx];
+            ty=ty+dy[temp_dir];
+            tx=tx+dx[temp_dir];
+        }
+        if (tm<=10000&&tm_arr[tm]=='L'){
+            dir=(dir+3)%4;
+        }
+        else if (tm_arr[tm]=='D') dir=(dir+1)%4;
+    }
+
+    cout << tm;
 }

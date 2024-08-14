@@ -1,127 +1,92 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-int hor_cnt=0, ver_cnt=0;
-int visitied[100][100]={0,};
+int N, L, answer, arr[100][100], visitied[100][100]={0,};
 
 int main()
 {
-    int N, L, mp[100][100];
     cin >> N >> L;
-    for (int i=0;i<N;i++){
-        for (int j=0;j<N;j++){
-            cin >> mp[i][j];
-        }
-    }
-
-    for (int i=0;i<N;i++){
-        int cnt=1,flag=0;
-        for (int j=0;j<N-1;j++){
-            if (mp[i][j]==mp[i][j+1]){
-                continue;
-            }
-            else if (mp[i][j]+1==mp[i][j+1]){
-                int cnt=0;
-                int k=j;
-                while (mp[i][k]==mp[i][j]&&k>=0&&!visitied[i][k]){
-                    cnt++;
-                    k--;
-                    if (cnt==L){
-                        for (int l=j;l>j-cnt;l--){
-                            visitied[i][l]=1;
-                        }
-                        break;
-                    }
-                }
-                if (cnt<L){
-                    flag=1;
-                    break;
-                }               
-            }
-            else if (mp[i][j]==mp[i][j+1]+1){
-                int cnt=0;
-                int k=j+1;
-                while (mp[i][k]==mp[i][j+1]&&k<N&&!visitied[i][k]){
-                    cnt++;
-                    k++;
-                    if (cnt==L){
-                        for (int l=j+1;l<j+1+cnt;l++){
-                            visitied[i][l]=1;
-                        }
-                        break;
-                    }
-                }
-                if (cnt<L){
-                    flag=1;
-                    break;
-                }        
-            }
-            else{
-                flag=1;
-                break;
-            }
-        }
-        if (!flag){
-            hor_cnt++;
-        }
-    }
 
     for (int i=0;i<N;i++){
         for (int j=0;j<N;j++){
-            visitied[i][j]=0;
+            cin >> arr[i][j];
         }
     }
-
+    // 가로선 확인
     for (int i=0;i<N;i++){
-        int cnt=1,flag=0;
-        for (int j=0;j<N-1;j++){
-            if (mp[j][i]==mp[j+1][i]){
-                continue;
-            }
-            else if (mp[j][i]+1==mp[j+1][i]){
-                int cnt=0;
-                int k=j;
-                while (mp[k][i]==mp[j][i]&&k>=0&&!visitied[k][i]){
-                    cnt++;
-                    k--;
-                    if (cnt==L){                       
-                        for (int l=j;l>j-cnt;l--){
-                            visitied[l][i]=1;
-                        }
-                        break;
-                    }
-                }
-                if (cnt<L){
-                    flag=1;
-                    break;
-                }                              
-            }
-            else if (mp[j][i]==mp[j+1][i]+1){
-                int cnt=0;
-                int k=j+1;
-                while (mp[k][i]==mp[j+1][i]&&k<N&&!visitied[k][i]){
-                    cnt++;
-                    k++;
-                    if (cnt==L){
-                        for (int l=j+1;l<j+1+cnt;l++){
-                            visitied[l][i]=1;
-                        }
-                        break;
-                    }
-                }
-                if (cnt<L){
-                    flag=1;
-                    break;
-                }        
-            }
-            else{
-                flag=1;
+        int flag=1;
+        for (int j=0;j<N;j++){
+            // 직전과 2 이상 차이나면 아웃
+            if (j>0&&abs(arr[i][j]-arr[i][j-1])>1){
+                flag=0;
                 break;
             }
+            // 직전과 같으면 통과
+            if (j>0&&arr[i][j]==arr[i][j-1]) continue;
+            // 직전이 1 클 때
+            if (j>0&&arr[i][j-1]-1==arr[i][j]){
+                for (int k=j;k<j+L;k++){
+                    if (k>=N||arr[i][k]!=arr[i][j]){
+                        flag=0;
+                        break;
+                    }
+                    visitied[i][k]=1;
+                }
+                if (flag==0) break;
+            }
+            // 직전이 1 작을 때
+            if (j>0&&arr[i][j-1]+1==arr[i][j]){
+                for (int k=j-1;k>j-1-L;k--){
+                    if (k<0||visitied[i][k]||arr[i][k]!=arr[i][j-1]){
+                        flag=0;
+                        break;
+                    }
+                }
+                if (flag==0) break;
+            }
         }
-        if (!flag){
-            ver_cnt++;
-        }
+        if (flag){
+            answer++;
+        }   
     }
-    cout << ver_cnt+hor_cnt;
+    fill(&visitied[0][0],&visitied[0][0]+100*100,0);
+    // 세로선 확인
+    for (int j=0;j<N;j++){
+        int flag=1;
+        for (int i=0;i<N;i++){
+            // 직전과 2 이상 차이나면 아웃
+            if (i>0&&abs(arr[i][j]-arr[i-1][j])>1){
+                flag=0;
+                break;
+            }
+            // 직전과 같으면 통과
+            if (i>0&&arr[i][j]==arr[i-1][j]) continue;
+            // 직전이 1 클 때
+            if (i>0&&arr[i-1][j]-1==arr[i][j]){
+                for (int k=i;k<i+L;k++){
+                    if (k>=N||arr[k][j]!=arr[i][j]){
+                        flag=0;
+                        break;
+                    }
+                    visitied[k][j]=1;
+                }
+                if (flag==0) break;
+            }
+            // 직전이 1 작을 때
+            if (i>0&&arr[i-1][j]+1==arr[i][j]){
+                for (int k=i-1;k>i-1-L;k--){
+                    if (k<0||visitied[k][j]||arr[k][j]!=arr[i-1][j]){
+                        flag=0;
+                        break;
+                    }
+                }
+                if (flag==0) break;
+            }
+        }
+        if (flag){
+            answer++;
+        }  
+    }
+    cout << answer;
 }

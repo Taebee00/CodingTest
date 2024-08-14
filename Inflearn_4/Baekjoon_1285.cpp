@@ -2,49 +2,41 @@
 
 using namespace std;
 
-int N,ret=0; int mp[20];
+int N, ret=0; 
+char temp_arr[20][20], arr[20][20];
 
-void find(int sz,int choice){
-    int sum=0,cnt=0;
+void reverse_arr(int idx){
     for (int i=0;i<N;i++){
-        cnt=0;
-        for (int j=0;j<N;j++){
-            if (mp[j]&(1<<i)){
-                cnt++;
-            }
-        }
-        sum+=(cnt<=N/2)?cnt:N-cnt;
+        arr[idx][i]=arr[idx][i]=='T'?'H':'T';
     }
-    for (int i=choice+1;i<N;i++){
-        if (sz+1==2*N){
-            mp[choice]=~(mp[choice]);
-            if (sum<ret){
-                ret=sum;
-            }  
-            return;
-        }
-        mp[i]=~(mp[i]);      
-        find(sz+1,i);
-    }
-    mp[choice]=~(mp[choice]);
-    if (sum<ret){
-        ret=sum;
-    }  
 }
 
 int main()
-{   
+{
     cin >> N;
+
     for (int i=0;i<N;i++){
         for (int j=0;j<N;j++){
-            char coin;
-            cin >> coin;
-            if (coin=='T'){
-                mp[i]|=(1<<j);
-                ret++;
-            }          
+            cin >> temp_arr[i][j];
         }
     }
-    find(0,-1);
-    cout << ret;
+
+    for (int i=0;i<1<<N;i++){
+        memcpy(arr,temp_arr,sizeof(temp_arr));
+        int cnt=0;
+        for (int j=0;j<N;j++){
+            if (i&(1<<j)){
+                reverse_arr(j);
+            }
+        }
+        for (int j=0;j<N;j++){
+            int t_cnt=0;
+            for (int k=0;k<N;k++){
+                if (arr[k][j]=='T') t_cnt++;
+            }
+            cnt+=max(t_cnt,N-t_cnt);
+        }
+        ret=max(cnt,ret);
+    }
+    cout << N*N-ret;
 }

@@ -2,45 +2,32 @@
 
 using namespace std;
 
-int sosu[4000001]={0,};
-int sosuarr[4000000];
-int sumarr[4000000];
+int N, idx=1, answer=0, arr[4000001]={0,};
+int prefix_sum[4000000];
 
 int main()
 {
-    int N;
     cin >> N;
-    for (int i=2;i<=N;i++){
-        int idx=2;
-        while(idx*i<=N&&!sosu[i]){
-            sosu[idx*i]=1;
+
+    arr[1]=1;
+    arr[2]=0;
+
+    for (int i=2;i<=4000000;i++){
+        for (int j=2;i*j<=4000000;j++){
+            arr[i*j]=1;
+        }
+    }
+    prefix_sum[0]=0;
+    for (int i=0;i<=4000000;i++){
+        if (!arr[i]){
+            prefix_sum[idx]=prefix_sum[idx-1]+i;
+            int temp=idx; int temp_sum=0;
+            while(prefix_sum[idx]-prefix_sum[temp]<N&&temp>=0){
+                temp--;
+            }
+            if (prefix_sum[idx]-prefix_sum[temp]==N) answer++;
             idx++;
         }
     }
-    int idx=1;
-    sumarr[0]=0;
-    for (int i=2;i<=N;i++){
-        if (!sosu[i]){
-            sosuarr[idx]=i;
-            sumarr[idx]=sumarr[idx-1]+i;
-            idx++;
-        }
-    }
-    // for (int i=0;i<idx;i++){
-    //     cout << sumarr[i] << " ";
-    // }
-    int cnt=0;
-    int front=0;
-    int rear=0;
-    while(rear<=idx){
-        rear++;
-        while (sumarr[rear]-sumarr[front]>N){
-            front++;
-        }
-        if (sumarr[rear]-sumarr[front]==N){
-            cnt++;
-            //printf("%d %d\n",sosuarr[front],sosuarr[rear]);
-        }
-    }
-    cout << cnt;
+    cout << answer;
 }

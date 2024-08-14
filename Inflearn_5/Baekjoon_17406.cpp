@@ -2,91 +2,83 @@
 
 using namespace std;
 
-int N, M, K, mp[51][51], temp_mp[51][51], ret=INT_MAX;
-vector<vector<int>> v;
-vector<int> choose_v;
-int dy[4]={1,0,-1,0}, dx[4]={0,1,0,-1};
+struct rot{
+    int r;
+    int c;
+    int s;
+};
 
-void rotate(int y,int x,int sz){
-    for (int i=1;i<=sz;i++){
+int N, M, K, answer=INT_MAX, arr[50][50], temp_arr[50][50];
+vector<struct rot> v;
 
-        int start_y=y-i;
-        int start_x=x-i; 
-        int start_val=temp_mp[start_y][start_x];
-        int temp_y=start_y;
-        int temp_x=start_x;
-
-        for (int j=0;j<4;j++){
-            int rotate_flag=i*2;
-            while(rotate_flag--){
-                // printf("%d,%d ",temp_y,temp_x);
-                temp_mp[temp_y][temp_x]=temp_mp[temp_y+dy[j]][temp_x+dx[j]];
-                temp_y+=dy[j];
-                temp_x+=dx[j];
-            }
-            //printf("\n");
-        }
-        temp_mp[start_y][start_x+1]=start_val;
+void circle(int sy,int sx,int sz){
+    int sv=temp_arr[sy][sx];
+    int y=sy; int x=sx;
+    while(y<sy+sz){
+        temp_arr[y][x]=temp_arr[y+1][x];
+        y++;
     }
+    while(x<sx+sz){
+        temp_arr[y][x]=temp_arr[y][x+1];
+        x++;
+    }
+    while(y>sy){
+        temp_arr[y][x]=temp_arr[y-1][x];
+        y--;
+    }
+    while(x>sx){
+        temp_arr[y][x]=temp_arr[y][x-1];
+        x--;
+    }
+    temp_arr[sy][sx+1]=sv;
 }
 
-void choose(int sz,vector<int> &_choose_v){
-    if (sz==K){
-        for (int i=1;i<=N;i++){
-            for (int j=1;j<=M;j++){
-                temp_mp[i][j]=mp[i][j];
-            }
+void cal()
+{
+    memcpy(temp_arr,arr,sizeof(arr));
+    for (auto i:v){
+        for (int j=1;j<=i.s;j++){
+            circle(i.r-j,i.c-j,j*2);
         }
-        for (int&i:_choose_v){
-            //printf("%d ",i);
-            rotate(v[i][0],v[i][1],v[i][2]);
+    }
+    int mn=INT_MAX;
+    for (int i=0;i<N;i++){
+        int sum=0;
+        for (int j=0;j<M;j++){
+            sum+=temp_arr[i][j];
         }
-        for (int j=1;j<=N;j++){
-            int sum=0;
-            for (int k=1;k<=M;k++){
-                sum+=temp_mp[j][k];
-            }
-            if (sum<ret){
-                ret=sum;
-            }
-        }
-        //printf("\n");
+        mn=min(sum,mn);
+    }
+    answer=min(answer,mn);
+}
+
+void permutation(int depth){
+    if (depth==v.size()){
+        cal();
         return;
     }
-    
-    for (int i=sz;i<K;i++){
-        swap(_choose_v[i],_choose_v[sz]);
-        choose(sz+1,_choose_v);
-        swap(_choose_v[i],_choose_v[sz]);
+    for (int i=depth;i<v.size();i++){
+        swap(v[i],v[depth]);
+        permutation(depth+1);
+        swap(v[i],v[depth]);
     }
 }
 
 int main()
 {
     cin >> N >> M >> K;
-    for (int i=1;i<N+1;i++){
-        for (int j=1;j<M+1;j++){
-            cin >> mp[i][j];
+
+    for (int i=0;i<N;i++){
+        for (int j=0;j<M;j++){
+            cin >> arr[i][j];
         }
     }
 
     for (int i=0;i<K;i++){
-        vector<int> temp_v;
-        for (int j=0;j<3;j++){
-            int temp;
-            cin >> temp;
-            temp_v.push_back(temp);
-        }
-        v.push_back(temp_v);
-        choose_v.push_back(i);
+        int a,b,c;
+        cin >> a >> b >> c;
+        v.push_back({a-1,b-1,c});
     }
-
-    choose(0,choose_v);
-    // for (int i=1;i<N+1;i++){
-    //     for (int j=1;j<M+1;j++){
-    //         printf("%d ",temp_mp[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-    cout << ret;
+    permutation(0);
+    cout << answer;
 }

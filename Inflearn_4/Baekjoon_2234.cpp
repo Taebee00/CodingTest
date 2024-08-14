@@ -2,71 +2,58 @@
 
 using namespace std;
 
-int N,M,sz;
-int mp[50][50];
-int visitied[50][50]={0,};
+int N, M, arr[50][50], visitied[50][50]={0,};
+int answer_1=0, answer_2=0, answer_3=0;
+int dy[4]={0,-1,0,1}, dx[4]={-1,0,1,0};
+vector<pair<int,int>> v[2501];
 
-int dx[4]={-1,0,1,0}, dy[4]={0,-1,0,1};
-
-void init(){
-    for (int i=0;i<M;i++){
-        for (int j=0;j<N;j++){
-            visitied[i][j]=0;
-        }
-    }
-}
-
-void dfs(int y,int x){
-    sz++;
-    visitied[y][x]=1;
+int dfs(int y,int x){
+    int ret=1;
+    visitied[y][x]=answer_1;
+    v[answer_1].push_back({y,x});
     for (int i=0;i<4;i++){
-        if (!(mp[y][x]&(1<<i))){
-            if (x+dx[i]>=0&&y+dy[i]>=0&&x+dx[i]<N&&y+dy[i]<M&&!visitied[y+dy[i]][x+dx[i]]){
-                dfs(y+dy[i],x+dx[i]);
-            }
-        }
+        int ny=y+dy[i];
+        int nx=x+dx[i];
+        if (ny<0||nx<0||ny>=M||nx>=N) continue;
+        if (visitied[ny][nx]||(arr[y][x]&(1<<i))) continue;
+        ret+=dfs(ny,nx);
     }
+    return ret;
 }
 
 int main()
 {
-    int one=0,two=0,three=0;
     cin >> N >> M;
+
     for (int i=0;i<M;i++){
         for (int j=0;j<N;j++){
-            cin >> mp[i][j];
+            cin >> arr[i][j];
         }
     }
 
     for (int i=0;i<M;i++){
         for (int j=0;j<N;j++){
-            if (!visitied[i][j])
-            {
-                one++;
-                sz=0;
-                dfs(i,j);
-                if (sz>two){
-                    two=sz;
+            if (!visitied[i][j]){
+                answer_1++;
+                answer_2=max(answer_2,dfs(i,j));
+            }
+        }
+    }
+    
+    for (int i=1;i<=answer_1;i++){
+        for (auto j:v[i]){
+            for (int k=0;k<4;k++){
+                int ny=j.first+dy[k];
+                int nx=j.second+dx[k];
+                if (ny<0||nx<0||ny>=M||nx>=N) continue;
+                if (visitied[ny][nx]!=i){
+                    answer_3=max(answer_3,int(v[i].size()+v[visitied[ny][nx]].size()));
                 }
             }
         }
     }
 
-    for (int i=0;i<M;i++){
-        for (int j=0;j<N;j++){
-            for (int k=0;k<4;k++){
-                init();
-                int temp=mp[i][j];
-                mp[i][j]&=~(1<<k);
-                sz=0;
-                dfs(i,j);
-                if (sz>three){
-                    three=sz;
-                }
-                mp[i][j]=temp;
-            }            
-        }
+    for (int i=1;i<=answer_1;i++){
     }
-
-    cout << one << "\n"<< two << "\n" << three;
+    cout << answer_1 << "\n" << answer_2 << "\n" << answer_3;
 }

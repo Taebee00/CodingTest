@@ -2,68 +2,45 @@
 
 using namespace std;
 
-int dy[4]={0,-1,0,1}, dx[4]={1,0,-1,0}, mp[101][101]={0,};
-pair<int,int> dim[4]={{1,0},{1,1},{0,1},{1,0}};
+int N, arr[101][101]={0,}, answer=0;
+int dy[4]={0,-1,0,1}, dx[4]={1,0,-1,0};
 
-void dragon(vector<int> &v){
+void dragon_curve(vector<pair<int,int>> &v, int gen, pair<int,int> center){
+    if (gen==0) return;
     vector<pair<int,int>> temp_v;
-    temp_v.push_back({v[1],v[0]});
-    temp_v.push_back({v[1]+dy[v[2]],v[0]+dx[v[2]]});
-    while(v[3]--){
-        int y,x;
-        pair<int,int> s=temp_v.back();
-        vector<pair<int,int>> temp_temp_v;
-        for (int i=temp_v.size()-2;i>=0;i--){
-            if (temp_v[i].first<s.first&&temp_v[i].second<=s.second){
-                y=s.first-abs(temp_v[i].second-s.second);
-                x=s.second+abs(temp_v[i].first-s.first);
-            }
-            else if (temp_v[i].first<=s.first&&temp_v[i].second>s.second){
-                y=s.first+abs(temp_v[i].second-s.second);
-                x=s.second+abs(temp_v[i].first-s.first);
-            }
-            else if (temp_v[i].first>s.first&&temp_v[i].second>=s.second){
-                y=s.first+abs(temp_v[i].second-s.second);
-                x=s.second-abs(temp_v[i].first-s.first);
-            }
-            else if (temp_v[i].first>=s.first&&temp_v[i].second<s.second){
-                y=s.first-abs(temp_v[i].second-s.second);
-                x=s.second-abs(temp_v[i].first-s.first);
-            }      
-            temp_temp_v.push_back({y,x});
-        }
-        for (auto&i:temp_temp_v){
-            temp_v.push_back(i);
-        }    
+    pair<int,int> next_center;
+    for (int i=0;i<v.size();i++){
+        int y=v[i].first-center.first;
+        int x=v[i].second-center.second;
+        int ny=center.first+x;
+        int nx=center.second-y;
+        if (ny<0||nx<0||ny>100||nx>100) continue;
+        if (i==0) next_center={ny,nx};
+        temp_v.push_back({ny,nx});
     }
-    for (auto&i:temp_v){
-        //printf("%d %d\n",i.first,i.second);
-        mp[i.first][i.second]=1;
-    }  
+    for (auto i:temp_v) v.push_back(i);
+    dragon_curve(v,gen-1,next_center);
 }
 
 int main()
 {
-    int N,cnt=0;
-    vector<vector<int>> v;
     cin >> N;
+
     for (int i=0;i<N;i++){
-        int temp; vector<int> temp_v;
-        for (int j=0;j<4;j++){         
-            cin >> temp;
-            temp_v.push_back(temp);
+        vector<pair<int,int>> v;
+        int x,y,d,g;
+        cin >> x >> y >> d >> g;
+        v.push_back({y,x});
+        v.push_back({y+dy[d],x+dx[d]});
+        dragon_curve(v,g,v[1]);
+        for (auto j:v){
+            arr[j.first][j.second]=1;
         }
-        v.push_back(temp_v);
-    }
-    for (int i=0;i<N;i++){
-        dragon(v[i]);
     }
     for (int i=0;i<100;i++){
         for (int j=0;j<100;j++){
-            if (mp[i][j]&&mp[i+1][j]&&mp[i+1][j+1]&&mp[i][j+1]){
-                cnt++;
-            }
+            if (arr[i][j]&&arr[i+1][j]&&arr[i][j+1]&&arr[i+1][j+1]) answer++;
         }
     }
-    cout << cnt;
+    cout << answer;
 }

@@ -4,64 +4,51 @@ using namespace std;
 
 int main()
 {
-    int T;
-    cin >> T;
-    for (int i=0;i<T;i++){
-        int l; 
-        string str, arr;
-        cin >> str >> l >> arr;
-        int idx=arr.length()-2;
-        deque<int> v;
-        while(idx>=0){
-            int num=0,zeros=0,flag=0;
-            while(arr[idx]!=','&&idx>0){
-                num+=(arr[idx]-'0')*(int)pow(10,zeros);
-                zeros++;
-                idx--;
-                flag=1;
+    int tc;
+
+    cin >> tc;
+
+    for (int i=0;i<tc;i++){
+        deque<int> deq;
+        string cmd, num;
+        char input;
+        int sz;
+        cin >> cmd >> sz;
+
+        while(1){
+            cin >> input;
+            if (input>='0'&&input<='9'){
+                num+=input;
             }
-            if (flag){
-                v.push_back(num);
+            else if (num.size()){
+                deq.push_back(stoi(num));
+                num="";
             }
-            else{
-                idx--;
+            if (input==']') break; 
+        }
+
+        int r=0;
+        int flag=1;
+        for (char j:cmd){
+            if (j=='R') r^=1;
+            else if (!deq.size()){
+                flag=0;
+                break;
+            }
+            else if (r==0){
+                deq.pop_front();
+            }
+            else if (r==1){
+                deq.pop_back();
             }
         }
-        int flag=0;
-        int r_flag=0;
-        for (auto&j:str){
-            if (j=='R'){
-                r_flag=r_flag==1?0:1;
-            }
-            if (j=='D'){
-                if (v.empty()){
-                    flag=1;
-                    break;
-                }
-                else if (r_flag==0){
-                    v.pop_back();
-                }
-                else{
-                    v.pop_front();
-                }
-            }
-        }
-        if (flag){
-            cout << "error" << "\n";
-        }
+        if (!flag) cout << "error\n";
         else{
-            cout << '[';
-            if (r_flag==0&&!v.empty()){
-                for (int j=v.size()-1;j>0;j--){
-                    cout << v[j] << ',';
-                }
-                cout << v[0];
-            }
-            else if ((r_flag==1&&!v.empty())){
-                for (int j=0;j<v.size()-1;j++){
-                    cout << v[j] << ',';
-                }
-                cout << v[v.size()-1];
+            if (r) reverse(deq.begin(),deq.end());
+            cout << "[";
+            for (int i=0;i<deq.size();i++){
+                cout << deq[i];
+                if (i!=deq.size()-1) cout << ",";
             }
             cout << "]\n";
         }

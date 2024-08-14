@@ -4,21 +4,23 @@ using namespace std;
 
 int main()
 {
-    int N, x, cnt=0, arr[100000];
+    int N, x, rp, answer=0;
+    vector<int> v;
+
     cin >> N;
     for (int i=0;i<N;i++){
-        cin >> arr[i];
+        int num;
+        cin >> num;
+        v.push_back(num);
     }
     cin >> x;
-    sort(arr,arr+N);
+    sort(v.begin(),v.end());
+    rp=N-1;
     for (int i=0;i<N;i++){
-        int j=i+1;
-        while(j<N&&arr[j]<x-arr[i]){
-            j++;
+        while(v[i]+v[rp]>x&&rp>i){
+            rp--;
         }
-        if (j<N&&arr[j]==x-arr[i]){
-            cnt++;
-        }
+        if (v[i]+v[rp]==x&&i<rp) answer++;
     }
-    cout << cnt;
+    cout << answer;
 }

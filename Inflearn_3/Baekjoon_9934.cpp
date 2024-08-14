@@ -31,3 +31,34 @@ int main(){
         cout << "\n";
     }
 }
+#include <bits/stdc++.h>
+
+using namespace std;
+
+struct node{
+    int num;
+    int left;
+    int right;
+};
+
+struct node root;
+int K, visitied[3000]={0,};
+
+void dfs(int n){
+    queue<struct node> que;
+    que.push(root);
+    visitied[root]=1;
+    while(que.size()){
+        struct node temp=que.front();
+        que.pop();
+        if (visitied[temp.num]>K) continue;
+        
+    }
+}
+
+
+int main()
+{
+    root.num=0;
+    bfs(root);
+}

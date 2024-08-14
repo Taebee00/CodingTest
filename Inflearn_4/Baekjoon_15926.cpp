@@ -2,36 +2,42 @@
 
 using namespace std;
 
+int n, mx=0;
+stack<char> char_stk;
+stack<int> idx_stk;
+string str;
+
 int main()
 {
-    int n, mx=0; char str[200001];
-    stack<pair<char,int>> stk;
-    int arr[200001]={0,};
     cin >> n;
-    for (int i=0;i<n;i++){
-        cin >> str[i];
-    }
-    for (int i=0;i<n;i++){
-        if (str[i]=='('){
-            stk.push({'(',i});
+    
+    cin >> str;
+
+    idx_stk.push(-1);
+
+    for (int i=0;i<str.size();i++){
+        if (!char_stk.size()||str[i]=='('){
+            char_stk.push(str[i]);
+            idx_stk.push(i);
         }
-        else{
-            if (!stk.empty()&&stk.top().first=='('){
-                arr[stk.top().second]=1;
-                arr[i]=1;
-                stk.pop();
+        else if (str[i]==')'){
+            if (char_stk.top()=='('){
+                char_stk.pop();
+                idx_stk.pop();
             }
-        }    
-    }
-    for (int i=0;i<n;i++){
-        int cnt=0;
-        while(arr[i]==1){
-            i++;
-            cnt++;
-        }
-        if (cnt>mx){
-            mx=cnt;
+            else{
+                char_stk.push(str[i]);
+                idx_stk.push(i);
+            }
         }
     }
-    cout << mx;
+    idx_stk.push(str.size());
+    while(idx_stk.size()>1){
+        int a=idx_stk.top();
+        idx_stk.pop();
+        int b=idx_stk.top();
+        mx=max(a-b-1,mx);
+    }
+    if (char_stk.size()==str.size()) cout << "0";
+    else cout << mx;
 }

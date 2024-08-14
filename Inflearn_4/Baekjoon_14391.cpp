@@ -2,54 +2,51 @@
 
 using namespace std;
 
+int N, M, mx=0, visitied[4][4]={0,}, ver_hor[4][4];
+int dy[4]={-1,0,1,0}, dx[4]={0,1,0,-1};
+char arr[4][4];
+vector<int> max_v;
+int max_idx;
+
 int main()
 {
-    int N, M, h_mp[4][4],v_mp[4][4],mx=0;
-    char num;
     cin >> N >> M;
+
     for (int i=0;i<N;i++){
         for (int j=0;j<M;j++){
-            cin >> num;
-            h_mp[i][j]=num-'0';
-            v_mp[j][i]=num-'0';
+            cin >> arr[i][j];
         }
     }
-    for (int i=0;i<(1<<N*M);i++){
-        int sum_sum=0;
-        //cout << "i: " << i <<"\n";
-        //cout << "horizontal\n";
+
+    for (int i=0;i<1<<N*M;i++){
+        fill(&visitied[0][0],&visitied[0][0]+16,0);
         for (int j=0;j<N;j++){
-            int sum=0;
             for (int k=0;k<M;k++){
-                if (i&(1<<(j*M+k))){
-                    sum=sum*10+h_mp[j][k];
-                }
-                else{
-                    sum_sum+=sum;
-                    sum=0;              
-                }
+                if (i&(1<<(M*j+k))) ver_hor[j][k]=1;
+                else ver_hor[j][k]=0;
             }
-            sum_sum+=sum;
-            //cout << sum_sum << "\n";
         }
-        //cout << "vertical\n";
-        for (int j=0;j<M;j++){
-            int sum=0;
-            for (int k=0;k<N;k++){
-                if (!(i&(1<<(k*M+j)))){
-                    sum=sum*10+v_mp[j][k];
+        vector<int> v;
+        for (int j=0;j<N;j++){
+            for (int k=0;k<M;k++){
+                string str;
+                int y=j,x=k;
+                while (i&(1<<(y*M+k))&&x<M&&!visitied[y][x]){
+                    visitied[y][x]=1;
+                    str+=arr[y][x];
+                    x++;
                 }
-                else{
-                    sum_sum+=sum;
-                    sum=0;
+                while ((i&(1<<(y*M+k)))==0&&y<N&&!visitied[y][x]){
+                    visitied[y][x]=1;
+                    str+=arr[y][x];
+                    y++;
                 }
+                v.push_back(atoi(str.c_str()));
             }
-            sum_sum+=sum;
-            //cout << sum_sum << "\n";     
-        }    
-        if (sum_sum>mx){
-            mx=sum_sum;
         }
+        int sum=0;
+        for (int i:v) sum+=i;
+        mx=max(mx,sum);
     }
     cout << mx;
 }

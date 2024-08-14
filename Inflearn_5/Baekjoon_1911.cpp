@@ -2,29 +2,27 @@
 
 using namespace std;
 
-
-int N,L,first,last;
+int N, L, answer=0;
 vector<pair<int,int>> v;
 
-int main(){
-    
+int main()
+{
     cin >> N >> L;
+
     for (int i=0;i<N;i++){
-        int start;
-        int end;
+        int start,end;
         cin >> start >> end;
         v.push_back({start,end});
     }
     sort(v.begin(),v.end());
-    int cnt=0, temp=v[0].first;
-    for (auto&i:v){
-        if (temp<i.first){
-            temp=i.first;
-        }
+    int temp=0;
+    for (auto i:v){
+        if (temp>=i.second) continue;
+        int temp=max(temp,i.first);
         while(temp<i.second){
             temp+=L;
-            cnt++;
+            answer++;
         }
     }
-    cout << cnt;
+    cout << answer;
 }

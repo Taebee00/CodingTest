@@ -1,55 +1,46 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-int n,k, visitied[100001]={0,}, way[100001]={0,};
-queue<int> mp;
+int N, K, visitied[100001]={0,}, ret=INT_MAX, cnt=0;
 
-pair<int,int> find(int loc, int goal){
-    visitied[loc]=1;
-    way[loc]=1;
-    mp.push(loc);
-    int flag,mn=100000,cnt=0;
-    while(!mp.empty()){
-        if (mp.front()==goal){
-            return {mn,way[goal]};
+vector<int> cal(int temp){
+    vector<int> v;
+    v.push_back(temp+1);
+    v.push_back(temp-1);
+    v.push_back(temp*2);
+    return v;
+}
+
+void bfs(int start, int finish){
+    queue<int> que;
+    que.push(start);
+    visitied[start]=1;
+    while(que.size()){
+        int temp=que.front();
+        que.pop();
+        vector<int> temp_v=cal(temp);
+        if (visitied[temp]==ret) break;
+        for (int i:temp_v){
+            if (i==finish){
+                ret=visitied[temp]+1;
+                cnt++;
+            }
+            if (i<0||i>100000) continue;
+            if (visitied[i]&&visitied[i]<visitied[temp]+1) continue; 
+            que.push(i);
+            visitied[i]=visitied[temp]+1;
         }
-        if (mp.front()>0){
-            if (!visitied[mp.front()-1]){
-                mp.push(mp.front()-1);
-                visitied[mp.front()-1]=visitied[mp.front()]+1;
-                way[mp.front()-1]=way[mp.front()];
-            }
-            else if (visitied[mp.front()-1]==visitied[mp.front()]+1){
-                way[mp.front()-1]+=way[mp.front()];
-            }
-        }
-        if (mp.front()<100000){
-            if (!visitied[mp.front()+1]){
-                mp.push(mp.front()+1);
-                visitied[mp.front()+1]=visitied[mp.front()]+1;
-                way[mp.front()+1]=way[mp.front()];
-            }
-            else if (visitied[mp.front()+1]==visitied[mp.front()]+1){
-                way[mp.front()+1]+=way[mp.front()];
-            }
-        }
-        if (mp.front()*2<=100000){
-            if (!visitied[mp.front()*2]){
-                mp.push(mp.front()*2);
-                visitied[mp.front()*2]=visitied[mp.front()]+1;
-                way[mp.front()*2]=way[mp.front()];
-            }
-            else if (visitied[mp.front()*2]==visitied[mp.front()]+1){
-                way[mp.front()*2]+=way[mp.front()];
-            }
-        }
-        mp.pop();
     }
 }
 
 int main()
 {
-    cin >> n >> k;
-    pair<int,int> ret = find(n,k);
-    cout << ret.first-1 << " " << ret.second;
+    cin >> N >> K;
+    if (N==K){
+        cout << "0\n1";
+        return 0;
+    }
+    bfs(N,K);
+    cout << ret-1 << "\n" << cnt;
 }
